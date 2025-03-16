@@ -1,0 +1,26 @@
+name: Deploy to ECS
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Images"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: your-region
+          role-to-assume: arn:aws:iam::your-account-id:role/your-ecs-deploy-role
+
+      - name: Update ECS Service (Backend)
+        run: |
+          aws ecs update-service --cluster your-cluster-name --service backend-service --force-new-deployment
+
+      - name: Update ECS Service (Frontend)
+        run: |
+          aws ecs update-service --cluster your-cluster-name --service frontend-service --force-new-deployment

@@ -1,0 +1,29 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to AWS ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and push Backend Image
+        run: |
+          BACKEND_IMAGE="your-aws-account-id.dkr.ecr.your-region.amazonaws.com/backend-app"
+          docker build -t $BACKEND_IMAGE:latest -f dockers/backeEndDocker/Dockerfile .
+          docker push $BACKEND_IMAGE:latest
+
+      - name: Build and push Frontend Image
+        run: |
+          FRONTEND_IMAGE="your-aws-account-id.dkr.ecr.your-region.amazonaws.com/frontend-app"
+          docker build -t $FRONTEND_IMAGE:latest -f dockers/frontDocker/Dockerfile .
+          docker push $FRONTEND_IMAGE:latest
