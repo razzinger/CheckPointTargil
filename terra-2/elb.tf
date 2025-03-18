@@ -1,6 +1,6 @@
 resource "aws_elb" "classic_elb" {
   name               = "my-classic-elb"
-  availability_zones = ["us-east-1a", "us-east-1b"]
+  availability_zones = var.aws_zone
 
   listener {
     instance_port     = 80
@@ -19,7 +19,6 @@ resource "aws_elb" "classic_elb" {
 
   instances = aws_autoscaling_group.ecs.instances
 
-  cross_zone_load_balancing   = true
   idle_timeout                = 60
   connection_draining         = true
   connection_draining_timeout = 300
