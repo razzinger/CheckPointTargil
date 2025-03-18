@@ -30,7 +30,7 @@ resource "aws_iam_policy" "ecs_secrets_policy" {
       {
         Effect   = "Allow"
         Action   = ["s3:PutObject", "s3:GetObject"]
-        Resource = "${aws_s3_bucket_acl.my_bucket.arn}/*"
+        Resource = "${aws_s3_bucket.my_bucket.arn}/*"
       }
     ]
   })

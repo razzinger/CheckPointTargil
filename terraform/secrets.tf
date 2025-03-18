@@ -14,6 +14,6 @@ resource "aws_secretsmanager_secret_version" "sqs_s3_secret_value" {
   secret_string = jsonencode({
     VALID_TOKEN    = "${random_string.token.result}"
     SQS_QUEUE_URL  = aws_sqs_queue.my_queue.id
-    S3_BUCKET_NAME = aws_s3_bucket_acl.my_bucket.id
+    S3_BUCKET_NAME = aws_s3_bucket.my_bucket.id
   })
 }
