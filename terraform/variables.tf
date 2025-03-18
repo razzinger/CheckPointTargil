@@ -9,11 +9,11 @@ variable "aws_zone" {
 }
 
 variable "sqs_name" {
-  description = "The name of the SQS"
+  description = "SQS for targil"
   default     = "chkpoint-targil-sqs"
 }
 
 variable "bucket_name" {
-  description = "The name of the S3 bucket. Must be globally unique."
+  description = "S3 bucket for targil"
   default     = "chkpoint-targil-bucket"
 }
