@@ -6,8 +6,8 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # AWS Configuration
-AWS_REGION = "my-region"
-SQS_VALUES = "my-sqs-values"
+AWS_REGION  = "eu-north-1"
+EXEC_VALUES = "my-run-values"
 
 
 def get_secret(secret_name):
@@ -24,7 +24,7 @@ def get_secret(secret_name):
 
 
 # Load secrets
-secrets = get_secret(SQS_VALUES)
+secrets = get_secret(EXEC_VALUES)
 
 if secrets:
     TOKEN         = secrets["VALID_TOKEN"]

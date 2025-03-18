@@ -4,8 +4,8 @@ import os
 from datetime import datetime
 
 # AWS Configuration
-AWS_REGION = "your-region"  # e.g., "us-east-1"
-SQS_VALUES = "my-sqs-values"
+AWS_REGION  = "eu-north-1"
+EXEC_VALUES = "my-run-values"
 
 
 def get_secret(secret_name):
@@ -22,7 +22,7 @@ def get_secret(secret_name):
 
 
 # Load secrets
-secrets = get_secret(SQS_VALUES)
+secrets = get_secret(EXEC_VALUES)
 
 if secrets:    
     SQS_QUEUE_URL  = secrets["SQS_QUEUE_URL"]
