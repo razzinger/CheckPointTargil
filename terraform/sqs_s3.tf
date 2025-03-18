@@ -4,5 +4,5 @@ resource "aws_sqs_queue" "my_queue" {
 
 resource "aws_s3_bucket" "my_bucket" {
   bucket = var.bucket_name
-  acl = "private"
+  aws_s3_bucket_acl = "private"
 }
