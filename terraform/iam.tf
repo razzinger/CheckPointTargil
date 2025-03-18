@@ -20,7 +20,7 @@ resource "aws_iam_policy" "ecs_secrets_policy" {
       {
         Effect   = "Allow"
         Action   = ["secretsmanager:GetSecretValue"]
-        Resource = aws_secretsmanager_secret.sqs_s3_secret.arn  # Correct reference to app_secrets
+        Resource = aws_secretsmanager_secret.sqs_s3_secret.arn
       },
       {
         Effect   = "Allow"
@@ -30,7 +30,7 @@ resource "aws_iam_policy" "ecs_secrets_policy" {
       {
         Effect   = "Allow"
         Action   = ["s3:PutObject", "s3:GetObject"]
-        Resource = "${aws_s3_bucket.my_bucket.arn}/*"  # Add "/*" to target objects in the bucket
+        Resource = "${aws_s3_bucket_acl.my_bucket.arn}/*"
       }
     ]
   })
