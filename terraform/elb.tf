@@ -1,7 +1,6 @@
 resource "aws_elb" "classic_elb" {
   name               = "my-classic-elb"
   internal           = false
-  availability_zones = [var.aws_zone]
   security_groups    = [aws_security_group.elb_sg.id]
   subnets            = [aws_subnet.public.id]
 
@@ -30,8 +29,9 @@ resource "aws_elb" "classic_elb" {
 }
 
 resource "aws_lb_target_group" "ecs_frontend" {
-  name     = "ecs-frontend-tg"
-  port     = 80
-  protocol = "TCP"
-  vpc_id   = aws_vpc.main.id
+  name        = "ecs-frontend-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.main.id
+  target_type = "ip"
 }
