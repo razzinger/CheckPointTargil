@@ -1,5 +1,5 @@
 resource "aws_security_group" "elb_sg" {
-    name        = "elb-security-group"
+    name        = "elb-sg"
     description = "Security group for the Load Balancer"
     vpc_id      = aws_vpc.main.id
 

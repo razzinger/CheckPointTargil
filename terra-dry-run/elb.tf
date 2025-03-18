@@ -1,8 +1,9 @@
 resource "aws_elb" "classic_elb" {
   name               = "my-classic-elb"
+  internal           = false
   availability_zones = [var.aws_zone]
-  subnets            = [aws_subnet.public.id, aws_subnet.private.id]
   security_groups    = [aws_security_group.elb_sg.id]
+  subnets            = [aws_subnet.public.id]
 
   listener {
     instance_port     = 80
