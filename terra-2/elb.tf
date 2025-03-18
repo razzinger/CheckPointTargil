@@ -27,3 +27,10 @@ resource "aws_elb" "classic_elb" {
     Name = "Classic-ELB"
   }
 }
+
+resource "aws_lb_target_group" "ecs_frontend" {
+  name     = "ecs-frontend-tg"
+  port     = 80
+  protocol = "TCP"
+  vpc_id   = aws_vpc.main.id
+}
