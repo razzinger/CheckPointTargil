@@ -1,6 +1,6 @@
 resource "aws_elb" "classic_elb" {
   name               = "my-classic-elb"
-  availability_zones = var.aws_zone
+  availability_zones = [var.aws_zone]
   subnets            = [aws_subnet.public.id, aws_subnet.private.id]
   security_groups    = [aws_security_group.elb_sg.id]
 
