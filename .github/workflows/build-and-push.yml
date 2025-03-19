@@ -11,6 +11,8 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    container:
+      image: debian:latest
 
     steps:
       - name: Checkout code
@@ -41,13 +43,10 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
-      - name: Install AWS CLI v2
+      - name: Install AWS CLI
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl unzip
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+          apt-get update
+          apt-get install -y curl unzip awscli
         shell: bash
 
       - name: Set up AWS CLI
