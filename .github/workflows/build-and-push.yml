@@ -10,8 +10,6 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    container:
-      image: amazon/aws-cli:latest
 
     steps:
     - name: Checkout code
@@ -41,6 +39,11 @@ jobs:
     - name: Push backend image to Docker Hub
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+    - name: Install AWS CLI
+      run: |
+        apt-get update && apt-get install -y awscli
+      shell: bash
 
     - name: Set up AWS CLI
       uses: aws-actions/configure-aws-credentials@v1
