@@ -4,17 +4,24 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames  = true
 }
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
-  availability_zone       = var.aws_zone
+  availability_zone       = var.aws_zone_1
+}
+
+resource "aws_subnet" "public_2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.2.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = var.aws_zone_1
 }
 
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.2.0/24"
-  availability_zone = var.aws_zone
+  cidr_block        = "10.1.1.0/24"
+  availability_zone = var.aws_zone_1
 }
 
 resource "aws_internet_gateway" "gw" {

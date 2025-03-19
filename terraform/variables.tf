@@ -3,9 +3,14 @@ variable "aws_region" {
   default     = "eu-north-1"
 }
 
-variable "aws_zone" {
+variable "aws_zone_1" {
   description = "AWS zone"
   default     = "eu-north-1a"
+}
+
+variable "aws_zone_2" {
+  description = "AWS zone"
+  default     = "eu-north-1b"
 }
 
 variable "sqs_name" {
