@@ -38,7 +38,7 @@ def receive_messages():
     response = sqs.receive_message(
         QueueUrl=SQS_QUEUE_URL,
         MaxNumberOfMessages=10,  # Adjust based on your need
-        WaitTimeSeconds=10  # Long polling to reduce empty responses
+        WaitTimeSeconds=10       # Long polling to reduce empty responses
     )
     return response.get("Messages", [])
 
