@@ -21,16 +21,7 @@ resource "aws_lb_target_group" "ecs_frontend" {
   target_type = "ip" # Important for Fargate
 }
 
-# Target group for the backend service
-resource "aws_lb_target_group" "ecs_backend" {
-  name        = "ecs-backend-tg"
-  port        = 8080
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.main.id
-  target_type = "ip" # Important for Fargate
-}
-
-# ALB Listener to route traffic to the frontend target group
+# ALB Listener for frontend (Port 80)
 resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.alb.arn
   port              = 80

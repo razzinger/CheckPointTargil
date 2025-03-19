@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "backend" {
     ])
 }
 
-# ECS Service for Frontend
+# ECS Service for Frontend (With Load Balancer)
 resource "aws_ecs_service" "frontend" {
     name            = "frontend-service"
     cluster         = aws_ecs_cluster.my_cluster.id
@@ -72,7 +72,7 @@ resource "aws_ecs_service" "frontend" {
     }
 }
 
-# ECS Service for Backend
+# ECS Service for Backend (NO Load Balancer)
 resource "aws_ecs_service" "backend" {
     name            = "backend-service"
     cluster         = aws_ecs_cluster.my_cluster.id
@@ -83,12 +83,6 @@ resource "aws_ecs_service" "backend" {
     network_configuration {
         subnets          = [aws_subnet.private.id]
         security_groups  = [aws_security_group.ecs_sg.id]
-        assign_public_ip = false
-    }
-
-    load_balancer {
-        target_group_arn = aws_lb_target_group.ecs_backend.arn
-        container_name   = "backend-container"
-        container_port   = 8080
+        assign_public_ip = false  # Backend is private, reachable only within VPC
     }
 }
