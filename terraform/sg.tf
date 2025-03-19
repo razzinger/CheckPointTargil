@@ -1,4 +1,4 @@
-resource "aws_security_group" "elb_sg" {
+resource "aws_security_group" "lb_sg" {
     name        = "elb-sg"
     description = "Security group for the Load Balancer"
     vpc_id      = aws_vpc.main.id
