@@ -91,3 +91,8 @@ Before you begin, ensure you have:
 
 For any issues or contributions, open an **issue** or submit a **pull request**.
 
+
+================================================================================
+Improvements in next versions:
+- implement terraform modules
+- integrate monitoring tools 
