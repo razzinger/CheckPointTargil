@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - 'source/**'  # Monitor for changes in the 'source' folder
+  workflow_dispatch:  # Allows manual trigger from GitHub Actions UI
 
 jobs:
   build_and_deploy:
