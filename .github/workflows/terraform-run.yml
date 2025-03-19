@@ -1,0 +1,53 @@
+name: Terraform Plan and Apply
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'terraform/**'  # Monitor only changes in the terraform folder
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest  # This will run inside a custom container
+    container:
+      image: hashicorp/terraform:light  # Lightweight Terraform image
+
+    steps:
+    - name: Install AWS CLI
+      run: |
+        apt-get update && apt-get install -y awscli
+      shell: bash
+    
+    - name: Set up AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-north-1
+
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: terraform
+
+    - name: Validate Terraform Configuration
+      run: terraform validate
+      working-directory: terraform
+
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
+      working-directory: terraform
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master'
+      run: terraform apply -auto-approve tfplan
+      working-directory: terraform
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

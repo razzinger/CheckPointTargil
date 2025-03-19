@@ -1,29 +1,130 @@
-name: Build and Push Docker Images
+name: Build and Deploy Docker Images
 
 on:
   push:
     branches:
       - master
+    paths:
+      - 'source/**'  # Monitor for changes in the 'source' folder
 
 jobs:
-  build-and-push:
+  build_and_deploy:
     runs-on: ubuntu-latest
+    container:
+      image: amazon/aws-cli:latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Login to AWS ECR
-        uses: aws-actions/amazon-ecr-login@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-      - name: Build and push Backend Image
-        run: |
-          BACKEND_IMAGE="your-aws-account-id.dkr.ecr.your-region.amazonaws.com/backend-app"
-          docker build -t $BACKEND_IMAGE:latest -f dockers/backeEndDocker/Dockerfile .
-          docker push $BACKEND_IMAGE:latest
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Frontend Image
-        run: |
-          FRONTEND_IMAGE="your-aws-account-id.dkr.ecr.your-region.amazonaws.com/frontend-app"
-          docker build -t $FRONTEND_IMAGE:latest -f dockers/frontDocker/Dockerfile .
-          docker push $FRONTEND_IMAGE:latest
+    - name: Build frontend image
+      run: |
+        docker build -f docker_files/frontend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest .
+
+    - name: Build backend image
+      run: |
+        docker build -f docker_files/backend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/backend:latest .
+
+    - name: Push frontend image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
+    - name: Push backend image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+    - name: Set up AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-north-1
+
+    - name: Update ECS Service with new Docker Images
+      run: |
+        aws ecs update-service \
+          --cluster your-cluster-name \
+          --service your-service-name \
+          --force-new-deployment
+
+          - name: Register ECS Task Definition for Frontend
+          run: |
+            FRONTEND_TASK_DEF=$(aws ecs register-task-definition \
+              --family your-task-definition-family \
+              --container-definitions "$(cat <<EOF
+            [
+              {
+                "name": "frontend",
+                "image": "${{ secrets.DOCKER_USERNAME }}/frontend:latest",
+                "memory": 512,
+                "cpu": 256,
+                "essential": true
+              }
+            ]
+            EOF
+            )" | jq -r '.taskDefinition.taskDefinitionArn')
+            echo "Frontend task definition ARN: $FRONTEND_TASK_DEF"
+        
+    - name: Register ECS Task Definition for Backend
+      run: |
+        BACKEND_TASK_DEF=$(aws ecs register-task-definition \
+          --family your-task-definition-family \
+          --container-definitions "$(cat <<EOF
+        [
+          {
+            "name": "backend",
+            "image": "${{ secrets.DOCKER_USERNAME }}/backend:latest",
+            "memory": 512,
+            "cpu": 256,
+            "essential": true
+          }
+        ]
+        EOF
+        )" | jq -r '.taskDefinition.taskDefinitionArn')
+        echo "Backend task definition ARN: $BACKEND_TASK_DEF"
+        
+    - name: Update ECS Service with New Task Definition
+      run: |
+        # Register a new task definition with both frontend and backend containers
+        NEW_TASK_DEF=$(aws ecs register-task-definition \
+          --family your-task-definition-family \
+          --container-definitions "$(cat <<EOF
+        [
+          {
+            "name": "frontend",
+            "image": "${{ secrets.DOCKER_USERNAME }}/frontend:latest",
+            "memory": 512,
+            "cpu": 256,
+            "essential": true
+          },
+          {
+            "name": "backend",
+            "image": "${{ secrets.DOCKER_USERNAME }}/backend:latest",
+            "memory": 512,
+            "cpu": 256,
+            "essential": true
+          }
+        ]
+        EOF
+        )" | jq -r '.taskDefinition.taskDefinitionArn')
+    
+        echo "New task definition ARN: $NEW_TASK_DEF"
+        
+    - name: Update ECS Service to Use New Task Definition
+      run: |
+        # Update ECS service with the new task definition ARN
+        aws ecs update-service \
+          --cluster your-cluster-name \
+          --service your-service-name \
+          --task-definition $NEW_TASK_DEF \
+          --force-new-deployment
+        
