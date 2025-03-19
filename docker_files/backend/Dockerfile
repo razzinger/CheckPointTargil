@@ -5,7 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Copy application files from source
-COPY ../../source/backend/backend.py .
+COPY source/backend/backend.py .
 
 # Install dependencies
 RUN pip install boto3

@@ -5,7 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Copy application files from source
-COPY ../../source/frontend/frontend.py .
+COPY source/frontend/frontend.py .
 
 # Install dependencies
 RUN pip install flask boto3
