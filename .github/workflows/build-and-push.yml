@@ -79,6 +79,7 @@ jobs:
           )" | jq -r '.taskDefinition.taskDefinitionArn')
           echo "Frontend task definition ARN: $FRONTEND_TASK_DEF"
           echo "FRONTEND_TASK_DEF=$FRONTEND_TASK_DEF" >> $GITHUB_ENV
+        shell: bash
 
       - name: Register ECS Task Definition for Backend
         run: |
@@ -102,6 +103,7 @@ jobs:
           )" | jq -r '.taskDefinition.taskDefinitionArn')
           echo "Backend task definition ARN: $BACKEND_TASK_DEF"
           echo "BACKEND_TASK_DEF=$BACKEND_TASK_DEF" >> $GITHUB_ENV
+        shell: bash
 
       - name: Update ECS Frontend Service
         run: |
