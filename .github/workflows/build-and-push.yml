@@ -60,7 +60,7 @@ jobs:
       - name: Register ECS Task Definition for Frontend
         run: |
           FRONTEND_TASK_DEF=$(aws ecs register-task-definition \
-            --family ${{ secrets.ECS_TASK_DEFINITION_FRONTEND_FAMILY }} \
+            --family frontend \
             --network-mode awsvpc \
             --requires-compatibilities FARGATE \
             --cpu 256 \
@@ -69,7 +69,7 @@ jobs:
           [
             {
               "name": "frontend",
-              "image": "${{ secrets.DOCKER_USERNAME }}/frontend:latest",
+              "image": "romanzinger75/frontend:latest",
               "memory": 512,
               "cpu": 256,
               "essential": true
@@ -108,9 +108,9 @@ jobs:
       - name: Update ECS Frontend Service
         run: |
           aws ecs update-service \
-            --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
-            --service ${{ secrets.ECS_SERVICE_FRONTEND_NAME }} \
-            --task-definition ${{ env.FRONTEND_TASK_DEF }} \
+            --cluster my-cluster \
+            --service frontend-service \
+            --task-definition frontend \
             --force-new-deployment
         shell: bash
 
