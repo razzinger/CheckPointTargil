@@ -112,6 +112,7 @@ jobs:
             --service ${{ secrets.ECS_SERVICE_FRONTEND_NAME }} \
             --task-definition ${{ env.FRONTEND_TASK_DEF }} \
             --force-new-deployment
+        shell: bash
 
       - name: Update ECS Backend Service
         run: |
@@ -120,3 +121,4 @@ jobs:
             --service ${{ secrets.ECS_SERVICE_BACKEND_NAME }} \
             --task-definition ${{ env.BACKEND_TASK_DEF }} \
             --force-new-deployment
+        shell: bash
