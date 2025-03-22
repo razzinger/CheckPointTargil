@@ -68,8 +68,8 @@ jobs:
             --container-definitions "$(cat <<EOF
           [
             {
-              "name": "frontend",
-              "image": "romanzinger75/frontend:latest",
+              "name": "frontend-container",
+              "image": "${{ vars.DOCKER_USERNAME }}/frontend:latest",
               "memory": 512,
               "cpu": 256,
               "essential": true
@@ -103,14 +103,14 @@ jobs:
           )" | jq -r '.taskDefinition.taskDefinitionArn')
           echo "Backend task definition ARN: $BACKEND_TASK_DEF"
           echo "BACKEND_TASK_DEF=$BACKEND_TASK_DEF" >> $GITHUB_ENV
-        shell: bash
+        shell: bash                                                                                                                                                        
 
       - name: Update ECS Frontend Service
         run: |
           aws ecs update-service \
-            --cluster my-cluster \
-            --service frontend-service \
-            --task-definition frontend \
+            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
+            --service ${{ vars.ECS_SERVICE_FRONTEND_NAME }} \
+            --task-definition ${{ vars.ECS_TASK_DEFINITION_FRONTEND_FAMILY }} \
             --force-new-deployment
         shell: bash
 
