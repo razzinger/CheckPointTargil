@@ -53,11 +53,12 @@ resource "aws_ecs_task_definition" "backend" {
 
 # ECS Service for Frontend (With Load Balancer)
 resource "aws_ecs_service" "frontend" {
-    name            = "frontend-service"
-    cluster         = aws_ecs_cluster.my_cluster.id
-    task_definition = aws_ecs_task_definition.frontend.arn
-    desired_count   = 1
-    launch_type     = "FARGATE"
+    name                 = "frontend-service"
+    cluster              = aws_ecs_cluster.my_cluster.id
+    task_definition      = aws_ecs_task_definition.frontend.arn
+    desired_count        = 1
+    launch_type          = "FARGATE"
+    force_new_deployment = true
 
     network_configuration {
         subnets          = [aws_subnet.private.id]
@@ -74,11 +75,12 @@ resource "aws_ecs_service" "frontend" {
 
 # ECS Service for Backend (NO Load Balancer)
 resource "aws_ecs_service" "backend" {
-    name            = "backend-service"
-    cluster         = aws_ecs_cluster.my_cluster.id
-    task_definition = aws_ecs_task_definition.backend.arn
-    desired_count   = 1
-    launch_type     = "FARGATE"
+    name                 = "backend-service"
+    cluster              = aws_ecs_cluster.my_cluster.id
+    task_definition      = aws_ecs_task_definition.backend.arn
+    desired_count        = 1
+    launch_type          = "FARGATE"
+    force_new_deployment = true
 
     network_configuration {
         subnets          = [aws_subnet.private.id]
