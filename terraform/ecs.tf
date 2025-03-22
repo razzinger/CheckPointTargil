@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "frontend" {
     container_definitions = jsonencode([
         {
             name  = "frontend-container"
-            image = "your_frontend_image:latest"    # Replace with actual image
+            image = "romanzinger75/frontend:latest"
             essential = true
             portMappings = [
                 {
@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "backend" {
     container_definitions = jsonencode([
         {
             name  = "backend-container"
-            image = "your_backend_image:latest"     # Replace with actual image
+            image = "romanzinger75/frontendbackend:latest"
             essential = true
             portMappings = [
                 {
