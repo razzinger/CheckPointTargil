@@ -15,12 +15,12 @@ resource "aws_ecs_task_definition" "frontend" {
   container_definitions = jsonencode([
     {
       name = "frontend-container"
-      image = "romanzinger75/frontend:latest"
+      image = "romanzinger75/chk-targil/frontend:latest"
       essential = true
       portMappings = [
         {
-          containerPort = 5000
-          hostPort = 5000 # host port is ignored in fargate, but keep it for consistency
+          containerPort = 8081
+          hostPort = 8081 # host port is ignored in fargate, but keep it for consistency
           protocol = "tcp"
         }
       ]
@@ -40,15 +40,8 @@ resource "aws_ecs_task_definition" "backend" {
   container_definitions = jsonencode([
     {
       name = "backend-container"
-      image = "romanzinger75/backend:latest"
+      image = "romanzinger75/chk-targil/backend:latest"
       essential = true
-      portMappings = [
-        {
-          containerPort = 5000
-          hostPort = 5000
-          protocol = "tcp"
-        }
-      ]
     }
   ])
 }
@@ -70,8 +63,8 @@ resource "aws_ecs_service" "frontend" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.ecs_frontend.arn
-    container_name = "frontend-container"
-    container_port = 5000 # Corrected to 5000
+    container_name   = "frontend-container"
+    container_port   = 8081
   }
 }
 

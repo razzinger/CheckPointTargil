@@ -1,5 +1,5 @@
 # Use Python 3.9 as base image
-FROM python:3.9
+FROM python:3.9-alpine
 
 # Set the working directory
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY source/frontend/frontend.py .
 RUN pip install flask boto3
 
 # Expose the application port
-EXPOSE 5000
+EXPOSE 8081
 
 # Run the frontend service
 CMD ["python", "frontend.py"]
