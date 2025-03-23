@@ -20,7 +20,7 @@ resource "aws_iam_policy" "ecs_secrets_policy" {
       {
         Effect   = "Allow"
         Action   = ["secretsmanager:GetSecretValue"]
-        Resource = aws_secretsmanager_secret.sqs_s3_secrets.arn
+        Resource = aws_secretsmanager_secret.sqs_s3_secrets_new.arn
       },
       {
         Effect   = "Allow"
