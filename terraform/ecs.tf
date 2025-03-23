@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "frontend" {
   container_definitions = jsonencode([
     {
       name = "frontend-container"
-      image = "romanzinger75/chk-targil/frontend:latest"
+      image = "romanzinger75/chk-targil:frontend-latest"
       essential = true
       portMappings = [
         {
@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "backend" {
   container_definitions = jsonencode([
     {
       name = "backend-container"
-      image = "romanzinger75/chk-targil/backend:latest"
+      image = "romanzinger75/chk-targil:backend-latest"
       essential = true
     }
   ])
