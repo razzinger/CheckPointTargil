@@ -34,6 +34,5 @@ resource "aws_appautoscaling_policy" "ecs_scale_in" {
     target_value = 30.0
     scale_out_cooldown = 60
     scale_in_cooldown  = 120
-    customized_metric_specification {}
   }
 }
