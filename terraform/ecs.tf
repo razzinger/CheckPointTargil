@@ -17,6 +17,20 @@ resource "aws_ecs_task_definition" "frontend" {
       name = "frontend-container"
       image = "romanzinger75/chk-targil:frontend-latest"
       essential = true
+      environment = [
+        {
+          name  = "DOCKER_HUB_USERNAME"
+          valueFrom = {
+            secretRef = "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:DOCKER_HUB_USERNAME-XXXXXX"
+          }
+        },
+        {
+          name  = "DOCKER_HUB_PASSWORD"
+          valueFrom = {
+            secretRef = "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:DOCKER_HUB_PASSWORD-XXXXXX"
+          }
+        }
+      ]
       portMappings = [
         {
           containerPort = 8081
