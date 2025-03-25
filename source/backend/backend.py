@@ -5,7 +5,7 @@ from datetime import datetime
 
 # AWS Configuration
 AWS_REGION  = "eu-north-1"
-EXEC_VALUES = "my-run-values"
+EXEC_VALUES = "sqs-s3-secrets_ver01"
 
 
 def get_secret(secret_name):
@@ -20,22 +20,22 @@ def get_secret(secret_name):
         print(f"Error retrieving secret: {e}")
         return None
 
-
 # Load secrets
-secrets = get_secret(EXEC_VALUES)
 
-if secrets:    
-    SQS_QUEUE_URL  = secrets["SQS_QUEUE_URL"]
-    S3_BUCKET_NAME = secrets["S3_BUCKET_NAME"]
-else:
+secrets = get_secret(EXEC_VALUES)
+if not secrets or "S3_BUCKET_NAME" not in secrets or "SQS_QUEUE_URL" not in secrets:
     raise ValueError("Failed to load secrets from AWS Secrets Manager")
 
+SQS_QUEUE_URL  = secrets["SQS_QUEUE_URL"]
+S3_BUCKET_NAME = secrets["S3_BUCKET_NAME"]
+
 # Initialize AWS Clients
-sqs = boto3.client("sqs", region_name=AWS_REGION)
-s3  = boto3.client("s3", region_name=AWS_REGION)
+sqs_client = boto3.client("sqs", region_name=AWS_REGION)
+s3_bucket  = boto3.client("s3", region_name=AWS_REGION)
+
 
 def receive_messages():
-    response = sqs.receive_message(
+    response = sqs_client.receive_message(
         QueueUrl=SQS_QUEUE_URL,
         MaxNumberOfMessages=10,  # Adjust based on your need
         WaitTimeSeconds=10       # Long polling to reduce empty responses
@@ -47,7 +47,7 @@ def store_message_to_s3(message):
     file_name = f"sqs_message_{timestamp}.json"
     file_content = json.dumps(message, indent=4)
     
-    s3.put_object(
+    s3_bucket.put_object(
         Bucket=S3_BUCKET_NAME,
         Key=file_name,
         Body=file_content
@@ -55,7 +55,7 @@ def store_message_to_s3(message):
     print(f"Stored message in S3: {file_name}")
 
 def delete_message_from_sqs(receipt_handle):
-    sqs.delete_message(
+    sqs_client.delete_message(
         QueueUrl=SQS_QUEUE_URL,
         ReceiptHandle=receipt_handle
     )
