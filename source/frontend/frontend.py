@@ -34,6 +34,8 @@ def health_check():
 def receive_data():
     # Load secrets
     secrets = get_secret(EXEC_VALUES)
+    print(f"Secrets: {secrets}")
+
     if not secrets or "VALID_TOKEN" not in secrets or "SQS_QUEUE_URL" not in secrets:
         return jsonify({"error": "Failed to load secrets from AWS Secrets Manager"}), 500
 
