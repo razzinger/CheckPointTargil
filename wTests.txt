@@ -1,0 +1,1 @@
+curl -X POST http://my-application-lb-777751152.eu-north-1.elb.amazonaws.com/ -H "Content-Type: application/json" -d '{"username": "admin", "token": "6cRVCHM9ekhol9wFTZXg8y"}'
