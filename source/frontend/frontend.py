@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # AWS Configuration
 AWS_REGION  = "eu-north-1"
-EXEC_VALUES = "sqs-s3-secrets_ver01"
+EXEC_VALUES = "sqs-s3-secrets-FRos9"
 
 
 def get_secret(secret_name):
