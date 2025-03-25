@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "frontend" {
   container_definitions = jsonencode([
     {
       name = "frontend-container"
-      image = "romanzinger75/chk-targil:frontend-latest"
+      image = "romanzinger75/frontend:latest"
       essential = true
       environment = [
         {
@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "frontend" {
       portMappings = [
         {
           containerPort = 8081
-          hostPort = 8081 # host port is ignored in fargate, but keep it for consistency
+          hostPort = 8081
           protocol = "tcp"
         }
       ]
@@ -54,8 +54,29 @@ resource "aws_ecs_task_definition" "backend" {
   container_definitions = jsonencode([
     {
       name = "backend-container"
-      image = "romanzinger75/chk-targil:backend-latest"
+      image = "romanzinger75/backend:latest"
       essential = true
+      environment = [
+        {
+          name  = "DOCKER_HUB_USERNAME"
+          valueFrom = {
+            secretRef = "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:DOCKER_HUB_USERNAME-XXXXXX"
+          }
+        },
+        {
+          name  = "DOCKER_HUB_PASSWORD"
+          valueFrom = {
+            secretRef = "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:DOCKER_HUB_PASSWORD-XXXXXX"
+          }
+        }
+      ]
+      portMappings = [
+        {
+          containerPort = 8081
+          hostPort = 8081
+          protocol = "tcp"
+        }
+      ]
     }
   ])
 }
@@ -94,6 +115,6 @@ resource "aws_ecs_service" "backend" {
   network_configuration {
     subnets = [aws_subnet.private.id]
     security_groups = [aws_security_group.ecs_sg.id]
-    assign_public_ip = false # Backend is private, reachable only within VPC
+    assign_public_ip = false
   }
 }

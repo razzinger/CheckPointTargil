@@ -27,19 +27,19 @@ jobs:
 
       - name: Build frontend image
         run: |
-          docker build -f docker_files/frontend/Dockerfile -t ${{ vars.DOCKER_USERNAME }}/chk-targil:frontend-latest .
+          docker build -f docker_files/frontend/Dockerfile -t ${{ vars.DOCKER_USERNAME }}/frontend:latest .
 
       - name: Build backend image
         run: |
-          docker build -f docker_files/backend/Dockerfile -t ${{ vars.DOCKER_USERNAME }}/chk-targil:backend-latest .
+          docker build -f docker_files/backend/Dockerfile -t ${{ vars.DOCKER_USERNAME }}/backend:latest .
 
       - name: Push frontend image to Docker Hub
         run: |
-          docker push ${{ vars.DOCKER_USERNAME }}/chk-targil:frontend-latest
+          docker push ${{ vars.DOCKER_USERNAME }}/frontend:latest
 
       - name: Push backend image to Docker Hub
         run: |
-          docker push ${{ vars.DOCKER_USERNAME }}/chk-targil:backend-latest
+          docker push ${{ vars.DOCKER_USERNAME }}/backend:latest
 
       - name: Install AWS CLI
         run: |
@@ -69,7 +69,7 @@ jobs:
           [
             {
               "name": "frontend-container",
-              "image": "${{ vars.DOCKER_USERNAME }}/chk-targil:frontend-latest",
+              "image": "${{ vars.DOCKER_USERNAME }}/frontend:latest",
               "memory": 512,
               "cpu": 256,
               "essential": true
@@ -93,7 +93,7 @@ jobs:
           [
             {
               "name": "backend",
-              "image": "${{ vars.DOCKER_USERNAME }}/chk-targil:backend-latest",
+              "image": "${{ vars.DOCKER_USERNAME }}/backend:latest",
               "memory": 512,
               "cpu": 256,
               "essential": true
