@@ -25,7 +25,9 @@ resource "aws_security_group" "lb_sg" {
 }
 
 resource "aws_security_group" "ecs_sg" {
-    vpc_id = aws_vpc.main.id
+    name        = "ecs-sg"
+    description = "Security group for the ECS"
+    vpc_id      = aws_vpc.main.id
 
     ingress {
         from_port   = 8081
