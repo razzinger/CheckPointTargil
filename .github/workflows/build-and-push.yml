@@ -72,7 +72,13 @@ jobs:
               "image": "${{ secrets.DOCKER_USERNAME }}/frontend:latest",
               "memory": 512,
               "cpu": 256,
-              "essential": true
+              "essential": true,
+              "portMappings": [
+                {
+                  "containerPort": 8081,
+                  "protocol": "tcp"
+                }
+              ]
             }
           ]
           EOF
@@ -80,7 +86,7 @@ jobs:
           echo "Frontend task definition ARN: $FRONTEND_TASK_DEF"
           echo "FRONTEND_TASK_DEF=$FRONTEND_TASK_DEF" >> $GITHUB_ENV
         shell: bash
-
+      
       - name: Register ECS Task Definition for Backend
         run: |
           BACKEND_TASK_DEF=$(aws ecs register-task-definition \
@@ -97,6 +103,12 @@ jobs:
               "memory": 512,
               "cpu": 256,
               "essential": true
+              "portMappings": [
+                {
+                  "containerPort": 8081,
+                  "protocol": "tcp"
+                }
+              ]
             }
           ]
           EOF
