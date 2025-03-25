@@ -1,6 +1,11 @@
 # Create AWS Secrets Manager secret
+resource "random_string" "secret_manager_suffix" {
+  length  = 5
+  special = false
+}
+
 resource "aws_secretsmanager_secret" "sqs_s3_secrets" {
-  name = "sqs-s3-secrets_ver01"
+  name = "sqs-s3-secrets-${random_string.secret_manager_suffix.result}"
 }
 
 resource "random_string" "token" {
