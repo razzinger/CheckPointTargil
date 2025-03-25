@@ -102,7 +102,7 @@ jobs:
               "image": "${{ secrets.DOCKER_USERNAME }}/backend:latest",
               "memory": 512,
               "cpu": 256,
-              "essential": true
+              "essential": true,
               "portMappings": [
                 {
                   "containerPort": 8081,
