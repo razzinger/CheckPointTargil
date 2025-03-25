@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # AWS Configuration
 AWS_REGION  = "eu-north-1"
-EXEC_VALUES = "my-run-values"
+EXEC_VALUES = "sqs-s3-secrets_ver01"
 
 
 def get_secret(secret_name):
@@ -32,23 +32,22 @@ def health_check():
 
 @app.route("/receive", methods=["POST"])
 def receive_data():
-    auth_header = request.headers.get("Authorization")
-
     # Load secrets
     secrets = get_secret(EXEC_VALUES)
+    if not secrets or "VALID_TOKEN" not in secrets or "SQS_QUEUE_URL" not in secrets:
+        return jsonify({"error": "Failed to load required secrets"}), 500
 
-    if secrets:
-        TOKEN         = secrets["VALID_TOKEN"]
-        SQS_QUEUE_URL = secrets["SQS_QUEUE_URL"]
-    else:
-        raise ValueError("Failed to load secrets from AWS Secrets Manager")
-    
-    if not auth_header or not auth_header.startswith("Bearer ") or auth_header.split(" ")[1] != TOKEN:
-        return jsonify({"error": "Unauthorized"}), 401
+    TOKEN         = secrets.get("VALID_TOKEN")
+    SQS_QUEUE_URL = secrets.get("SQS_QUEUE_URL")
 
+    #Parse JSON data
     data = request.get_json()
     if not data:
-        return jsonify({"error": "Invalid JSON"}), 400
+        return jsonify({"error": "Invalid JSON format"}), 400
+    
+    received_token = data.get("token")
+    if received_token != TOKEN:
+        return jsonify({"error": "Unauthorized: Invalid token"}), 401
 
     # Send message to SQS
     try:
@@ -58,7 +57,8 @@ def receive_data():
         )
         return jsonify({"message": "Data sent to SQS", "message_id": response["MessageId"]}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"Error sending message to SQS: {e}")
+        return jsonify({"error": "Failed to send message to SQS"}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8081)
