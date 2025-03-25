@@ -131,6 +131,6 @@ jobs:
           aws ecs update-service \
             --cluster ${{ vars.ECS_CLUSTER_NAME }} \
             --service ${{ vars.ECS_SERVICE_BACKEND_NAME }} \
-            --task-definition ${{ vars.BACKEND_TASK_DEF }} \
+            --task-definition ${{ vars.ECS_TASK_DEFINITION_BACKEND_FAMILY }} \
             --force-new-deployment
         shell: bash
