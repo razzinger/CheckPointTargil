@@ -29,7 +29,7 @@ resource "aws_subnet" "private" {
   cidr_block        = "10.0.30.0/24"
   availability_zone = var.aws_zone_1
   tags = {
-    Name = "private-02"
+    Name = "private-01"
   }
 }
 
